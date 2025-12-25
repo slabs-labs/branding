@@ -94,5 +94,4 @@ jobs:
 
           git commit -m "build(release): generate assets from ${{ github.sha }}" \
             -m "Automated asset generation via GitHub Actions" \
-            -m "Ref: ${{ github.event.head_commit.url }}"
           git push
