@@ -70,15 +70,15 @@ jobs:
         with:
           lfs: true
 
+      - name: Remove previous assets
+        run: |
+          rm -rf assets/**/*.png assets/**/*.sha256
+
       - name: Download assets artefact
         uses: actions/download-artifact@v6
         with:
           name: generated-assets
           path: assets
-
-      - name: Remove previous assets
-        run: |
-          rm -rf assets/**/*.png assets/**/*.sha256
 
       - name: Commit generated assets
         run: |
