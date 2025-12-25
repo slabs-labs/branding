@@ -1,0 +1,88 @@
+name: Generate Assets
+
+on:
+  push:
+    paths:
+      - "src/**/*.xcf"
+      - ".github/workflows/generate.yml"
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          lfs: true
+      
+      - name: Find XCF files
+        run: |
+          mkdir -p src
+          find src -type f -name "*.xcf"
+          if [ $? -ne 0 ]; then
+            echo "No XCF files found in src, aborting!"
+            exit 0
+          fi
+
+      - name: Install GIMP
+        run: |
+          sudo apt update
+          sudo apt install -y gimp
+
+      - name: Convert XCF to PNG
+        run: |
+          mkdir -p assets
+          find src -type f -name "*.xcf" | while read -r file; do
+            relative="${file#src/}"
+            output="assets/${relative%.xcf}.png"
+
+            mkdir -p "$(dirname "$output")"
+            xcf2png "$file" > "$output"
+          done
+
+      - name: Generate checksums
+        run: |
+          find assets -type f -name "*.png" | while read -r file; do
+            sha256sum "$file" > "${file}.sha256"
+          done
+
+      - name: Upload assets artefact
+        uses: actions/upload-artifact@v6
+        with:
+          name: generated-assets
+          path: assets
+
+  upload:
+    runs-on: ubuntu-latest
+    needs: generate
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          lfs: true
+
+      - name: Download assets artefact
+        uses: actions/download-artifact@v6
+        with:
+          name: generated-assets
+          path: assets
+
+      - name: Commit generated assets
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add assets
+
+          if git diff --cached --quiet; then
+            echo "No asset changes to commit, aborting!"
+            exit 0
+          fi
+
+          git commit -m "build(release): generate assets from ${{ github.sha }}"
+          git push
