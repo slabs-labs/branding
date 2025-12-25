@@ -16,4 +16,4 @@ Contributions to the branding assets are welcome! Please fork the repository and
 
 ## License
 
-All branding assets are licensed under the [Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/). You are free to use, share, and adapt the assets as long as you provide appropriate credit to [slabs labs](https://github.com/slab-labs/).
+All branding assets are licensed under the [Creative Commons Attribution 4.0 International License (CC BY 4.0)](https://creativecommons.org/licenses/by/4.0/). You are free to use, share, and adapt the assets as long as you provide appropriate credit to [Slabs Labs](https://github.com/slabs-labs/).
