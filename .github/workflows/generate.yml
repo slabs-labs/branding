@@ -57,7 +57,7 @@ jobs:
           path: assets
 
   upload:
-    name: Upload Converted Assets to the Repository
+    name: Upload converted assets to the repository
     runs-on: ubuntu-latest
     needs: convert
 
