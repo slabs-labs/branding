@@ -76,6 +76,10 @@ jobs:
           name: generated-assets
           path: assets
 
+      - name: Remove previous assets
+        run: |
+          rm -rf assets/**/*.png assets/**/*.sha256
+
       - name: Commit generated assets
         run: |
           git config user.name "github-actions[bot]"
