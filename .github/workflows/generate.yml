@@ -15,30 +15,32 @@ jobs:
         uses: actions/checkout@v6
         with:
           lfs: true
-      
+
       - name: Find XCF files
         run: |
           mkdir -p src
           find src -type f -name "*.xcf"
           if [ $? -ne 0 ]; then
-            echo "No XCF files found in src, aborting!"
+            echo "No XCF files found, aborting!"
             exit 0
           fi
 
-      - name: Install GIMP
+      - name: Install ImageMagick
         run: |
           sudo apt update
-          sudo apt install -y gimp
+          sudo apt install -y imagemagick
 
       - name: Convert XCF to PNG
         run: |
           mkdir -p assets
+
           find src -type f -name "*.xcf" | while read -r file; do
             relative="${file#src/}"
             output="assets/${relative%.xcf}.png"
 
             mkdir -p "$(dirname "$output")"
-            xcf2png "$file" > "$output"
+
+            convert "$file" -flatten "$output"
           done
 
       - name: Generate checksums
